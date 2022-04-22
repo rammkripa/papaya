@@ -58,10 +58,17 @@ class PapayaClient:
     
 
   def model_train_epoch(self):
+    '''
+    Train the model to one epoch
+    '''
+    ####### SETUP #######
     num_samples = self.data.shape[0]
     num_batches = math.ceil(num_samples / self.batch_size)
     last_loss = 0
     current_optimizer = self.optimizer(self.model.parameters(), lr=0.01)
+    ######################
+    ### TRAINING LOOP ####
+    ######################
     for i in range(num_batches) :
       current_optimizer.zero_grad()
       start_idx = i * self.batch_size
@@ -73,11 +80,18 @@ class PapayaClient:
       last_loss = curr_loss.item()
       curr_loss.backward()
       current_optimizer.step()
-    logs["stringy"] = "node" + self.node_id + "epoch " + self.epochs_trained + " loss " + last_loss
+    #######################
+    ### LOGGING ###########
+    #######################
+    logs["stringy"][self.epochs_trained] = "node" + self.node_id + "epoch " + self.epochs_trained + " loss " + last_loss
     logs["epochs"][self.epochs_trained] = last_loss
     self.epochs_trained += 1
 
   def select_partners(self, num_to_select) :
+    '''
+    select partners for the averaging process
+    LATER : Use Distributed Hash Table to get these values
+    '''
     nodes_to_select_from = nodes.values()
     neighbours = [i for i in nodes_to_select_from if i is not self]
     assert num_to_select <= len(neighbours)
@@ -86,22 +100,35 @@ class PapayaClient:
       self.current_partners[n.node_id] = n.model.state_dict()
 
   def update_partner_weights(self) :
-    #assign weights
+    '''
+    Train the weights for each of the peers chosen to participate in the update
+    '''
+    ###############################
+    ## assign weights and models ##
+    ###############################
     weights = {}
     models = {}
+    weights_optimizers = {}
     for p in self.current_partners.keys() :
-      weights[p] = self.partner_weights[p].item()
-      models[p] = TheModel()
+      weights[p] = self.partner_weight_manager.get_weight(p).item()
+      weights_optimizers[p] = torch.optim.SGD(self.partner_weight_manager.get_weight(p), lr=0.0001)
+      models[p] = self.model_class()
       models[p].load_state_dict(self.current_partners[p])
     # Calculate weight sum
     weight_sum = sum(list(weights.values()))
     # Do one epoch of stuff
+    ###############################
+    ##### SETUP ###################
+    ###############################
     num_samples = self.data.shape[0]
     num_batches = math.ceil(num_samples / self.batch_size)
     last_loss = 0
-    weights_optimizer = torch.optim.SGD(self.partner_weights, lr=0.0001)
+    ###############################
+    ##### Training Loop ###########
+    ###############################
     for i in range(num_batches) :
-      weights_optimizer.zero_grad()
+      for p in self.current_partners.keys() :
+        weights_optimizers[p].zero_grad()
       start_idx = i * self.batch_size
       end_idx = min((i+1) * self.batch_size, num_samples)
       curr_data = self.data[start_idx:end_idx]
@@ -109,19 +136,27 @@ class PapayaClient:
       output = self.model(curr_data) * (1 - weight_sum)
       for p in self.current_partners.keys() :
         curr_output = models[p](curr_data)
-        output += self.partner_weights[p] * curr_output
+        output += self.partner_weight_manager.get_weight(p) * curr_output
       curr_loss = self.loss(output, curr_labels)
       last_loss = curr_loss.item()
       curr_loss.backward()
-      weights_optimizer.step()
-    print(" MIXING UPDATE node", self.node_id, "epoch ", " loss ", last_loss)
-
+      for p in self.current_partners.keys() :
+        weights_optimizers[p].step()
+    ###############################
+    ########## LOG ################
+    ###############################
+    if "mixing" not in logs.keys() :
+      logs["mixing"] = []
+    logs["mixing"].append(" MIXING UPDATE node " + self.node_id + " loss " + last_loss)
 
   def average_partners(self) :
+    '''
+    After updating the partner weights, perform the average with partners
+    '''
     #assign weights
     weights = {}
     for p in self.current_partners.keys() :
-      weights[p] = self.partner_weights[p].item()
+      weights[p] = self.partner_weight_manager.get_weight(p).item()
     # Calculate weight sum for doing the parameter averaging
     weight_sum = sum(list(weights.values()))
     sd_curr = self.model.state_dict()
@@ -129,6 +164,6 @@ class PapayaClient:
       sd_curr[key] *= (1 - weight_sum)
       for p in self.current_partners.keys() :
         sd_curr[key] += self.current_partners[p][key] * weights[p]
-    self.model = TheModel()
+    self.model = self.model_class()
     self.model.load_state_dict(sd_curr)
       
