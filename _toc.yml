@@ -1,0 +1,16 @@
+format: jb-book
+root: MNIST
+parts:
+- caption: MNIST Experiments
+  chapters:
+  - file: MNIST
+  - file: MNIST-noniid
+  - file: MNIST-nonbalanced
+  - file: MNIST_bigger
+- caption: Fashion MNIST Experiments
+  chapters:
+  - file: F-MNIST
+  - file: F-MNIST-noniid
+  - file: F-MNIST-nonbalanced
+  - file: F-MNIST-nonbalanced-bigger
+  - file: F-MNIST-noniid-bigger
