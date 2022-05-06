@@ -1,8 +1,9 @@
 format: jb-book
-root: MNIST
+root: index
 parts:
 - caption: MNIST Experiments
   chapters:
+  - file: MNIST
   - file: MNIST-noniid
   - file: MNIST-nonbalanced
   - file: MNIST_bigger
