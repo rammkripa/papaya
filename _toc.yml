@@ -3,7 +3,6 @@ root: MNIST
 parts:
 - caption: MNIST Experiments
   chapters:
-  - file: MNIST
   - file: MNIST-noniid
   - file: MNIST-nonbalanced
   - file: MNIST_bigger
