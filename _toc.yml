@@ -14,3 +14,4 @@ parts:
   - file: F-MNIST-nonbalanced
   - file: F-MNIST-nonbalanced-bigger
   - file: F-MNIST-noniid-bigger
+  - file: F-MNIST-bigger
