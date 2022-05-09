@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fashion MNIST IID and Balanced Dataset &#8212; Papaya Jupyter Book</title>
+    <title>Fashion MNIST Conv Model &#8212; Papaya Jupyter Book</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,8 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Fashion MNIST Non IID Dataset" href="F-MNIST-noniid.html" />
-    <link rel="prev" title="MNIST training A Bigger Model" href="MNIST_bigger.html" />
+    <link rel="prev" title="Fashion MNIST Non IID Dataset with Bigger Model" href="F-MNIST-noniid-bigger.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -129,8 +128,8 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="F-MNIST.html">
    Fashion MNIST IID and Balanced Dataset
   </a>
  </li>
@@ -154,8 +153,8 @@
    Fashion MNIST Non IID Dataset with Bigger Model
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="F-MNIST-bigger.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Fashion MNIST Conv Model
   </a>
  </li>
@@ -200,7 +199,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/F-MNIST.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/F-MNIST-bigger.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -225,7 +224,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/F-MNIST.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/F-MNIST-bigger.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -249,7 +248,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Fashion MNIST IID and Balanced Dataset</h1>
+                <h1>Fashion MNIST Conv Model</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -260,8 +259,8 @@
             
               <div>
                 
-  <div class="section" id="fashion-mnist-iid-and-balanced-dataset">
-<h1>Fashion MNIST IID and Balanced Dataset<a class="headerlink" href="#fashion-mnist-iid-and-balanced-dataset" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fashion-mnist-conv-model">
+<h1>Fashion MNIST Conv Model<a class="headerlink" href="#fashion-mnist-conv-model" title="Permalink to this headline">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -322,13 +321,13 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TheModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">((</span><span class="mi">24</span> <span class="o">*</span> <span class="mi">24</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x1</span><span class="p">)))</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -376,12 +375,12 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>node4707epoch 99 loss 0.4933081567287445
-node2356epoch 99 loss 0.47502967715263367
-node2701epoch 99 loss 0.505750298500061
-node1288epoch 99 loss 0.4734148383140564
-node3711epoch 99 loss 0.48109182715415955
-node2082epoch 99 loss 0.5586797595024109
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>node1618epoch 99 loss 0.43679744005203247
+node1803epoch 99 loss 0.4060623049736023
+node3294epoch 99 loss 0.4369491934776306
+node4390epoch 99 loss 0.441571980714798
+node3198epoch 99 loss 0.4180338680744171
+node689epoch 99 loss 0.4182399809360504
 </pre></div>
 </div>
 </div>
@@ -406,12 +405,12 @@ node2082epoch 99 loss 0.5586797595024109
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{4707: 0.8096000105142593,
- 2356: 0.8093999952077866,
- 2701: 0.8076000064611435,
- 1288: 0.8087000012397766,
- 3711: 0.8119000017642974,
- 2082: 0.8101999938488007}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{1618: 0.8244000047445297,
+ 1803: 0.820399996638298,
+ 3294: 0.8206999987363816,
+ 4390: 0.8203000038862228,
+ 3198: 0.8242000043392181,
+ 689: 0.8256999969482421}
 </pre></div>
 </div>
 </div>
@@ -443,19 +442,12 @@ node2082epoch 99 loss 0.5586797595024109
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="MNIST_bigger.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="F-MNIST-noniid-bigger.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">MNIST training A Bigger Model</p>
+            <p class="prev-next-title">Fashion MNIST Non IID Dataset with Bigger Model</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="F-MNIST-noniid.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Fashion MNIST Non IID Dataset</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             
