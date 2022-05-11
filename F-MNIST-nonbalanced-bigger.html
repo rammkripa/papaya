@@ -322,14 +322,13 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TheModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="mi">784</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear3</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">((</span><span class="mi">24</span> <span class="o">*</span> <span class="mi">24</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x1</span><span class="p">)))))</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -387,12 +386,12 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>node1299epoch 99 loss 0.5508126616477966
-node450epoch 99 loss 0.6423541903495789
-node1028epoch 99 loss 0.45660585165023804
-node4568epoch 99 loss 0.5289923548698425
-node54epoch 99 loss 0.6246896386146545
-node667epoch 99 loss 0.7216795086860657
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>node1299epoch 99 loss 0.43982821702957153
+node450epoch 99 loss 0.3593287467956543
+node1028epoch 99 loss 0.3897861838340759
+node4568epoch 99 loss 0.37207454442977905
+node54epoch 99 loss 0.4991750717163086
+node667epoch 99 loss 0.39443331956863403
 </pre></div>
 </div>
 </div>
@@ -417,12 +416,12 @@ node667epoch 99 loss 0.7216795086860657
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{1299: 0.7859000027179718,
- 450: 0.7697999984025955,
- 1028: 0.7861999928951263,
- 4568: 0.7934000015258789,
- 54: 0.7844999998807907,
- 667: 0.7842999935150147}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{1299: 0.7964000076055526,
+ 450: 0.8146000027656555,
+ 1028: 0.8029000043869019,
+ 4568: 0.8259999990463257,
+ 54: 0.8180999994277954,
+ 667: 0.808899998664856}
 </pre></div>
 </div>
 </div>
